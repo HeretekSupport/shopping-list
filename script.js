@@ -1,15 +1,13 @@
 /* REQS:
 1) Add items to list via form [X]
-2) Remove items from list when clicking X button
-3) Clear ALL items with "clear" button
-4) Filter items by typing in the filter field
-5) Add localStorage to persist items
+2) Remove items from list when clicking X button [X]
+3) Clear ALL items with "clear" button [X]
+4) Filter items by typing in the filter field [X]
+5) Add localStorage to persist items [~]
 6) Click on an item to put into "edit mode" and add to form
 7) Update item
 8) Deploy to Netlify
 */
-
-// ADD ITEMS
 
 const enterItemForm = document.querySelector('#item-form');
 const itemFormInput = document.querySelector('.form-input');
@@ -17,11 +15,10 @@ const itemList = document.querySelector('#item-list');
 const clearButton = document.querySelector('#clear');
 const filter = document.querySelector('#filter');
 
+// ADD ITEMS
 
-
-/*Template for list items;
-Allows you to create items with exact attributes if no items exist to clone off of
-*/
+// Template for list items;
+// Allows you to create items with exact attributes if no items exist to clone off of
 function createListItem(itemText) {
 
     const li = document.createElement('li');
@@ -56,15 +53,22 @@ function addItemToList (e) {
     itemList.appendChild(newItem);
     
     itemFormInput.value = ''; //Reset the input each time
+    addItemToStorage(newItem.textContent); //Add it to local storage as well
     checkUI();
 }
 
 // REMOVE ITEMS
 function removeItemFromList(e) {
     if (e.target.closest('.remove-item')){
+        removeItemFromStorage(e.target.closest('li').remove()); //remove it from storage as well
         e.target.closest('li').remove();
     }
+    
     checkUI();
+}
+
+function removeItemFromStorage(item){
+    
 }
 
 function clearListItems(e) {
@@ -73,6 +77,7 @@ function clearListItems(e) {
         return;
     }
     allItems.forEach(item => {
+        removeItemFromStorage(item);
         item.remove();
     })
     checkUI();
@@ -105,6 +110,26 @@ function checkUI(){
         filter.style.display = 'block';
     }
 }
+
+// LOCAL STORAGE
+// Get an array of the items, stringify and store locally (Local can only store strings)
+
+function addItemToStorage(item){
+    let itemsFromStorage;
+
+    if (localStorage.getItem('items') === null){
+        itemsFromStorage = [];
+    } else {
+        itemsFromStorage = JSON.parse(localStorage.getItem('items')); //We want this in array format
+    }
+
+    itemsFromStorage.push(item);
+    
+    //Convert to JSON string and set to local storage
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage)); //Here we decide to use the 'items' key
+}
+
+
 
 //Event Listeners
 enterItemForm.addEventListener('submit', addItemToList);
