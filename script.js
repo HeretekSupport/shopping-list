@@ -60,25 +60,29 @@ function addItemToList (e) {
 // REMOVE ITEMS
 function removeItemFromList(e) {
     if (e.target.closest('.remove-item')){
-        removeItemFromStorage(e.target.closest('li').remove()); //remove it from storage as well
+        removeItemFromStorage(e.target.closest('li').textContent); //remove it from storage as well
         e.target.closest('li').remove();
     }
     
     checkUI();
 }
 
-function removeItemFromStorage(item){
-    
+function removeItemFromStorage(itemTextContent){
+    let itemsFromStorage = getItemsFromStorage();
+    itemsFromStorage = itemsFromStorage.filter((item) => item !== itemTextContent);
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+    checkUI();
 }
 
 function clearListItems(e) {
-    const allItems = itemList.querySelectorAll('li'); 
+    const allItems = itemList.querySelectorAll('li');
     if (allItems.length < 1) {
         return;
     }
     allItems.forEach(item => {
-        removeItemFromStorage(item);
+        removeItemFromStorage(item.textContent);
         item.remove();
+        
     })
     checkUI();
 }
@@ -115,13 +119,7 @@ function checkUI(){
 // Get an array of the items, stringify and store locally (Local can only store strings)
 
 function addItemToStorage(item){
-    let itemsFromStorage;
-
-    if (localStorage.getItem('items') === null){
-        itemsFromStorage = [];
-    } else {
-        itemsFromStorage = JSON.parse(localStorage.getItem('items')); //We want this in array format
-    }
+    let itemsFromStorage = getItemsFromStorage();
 
     itemsFromStorage.push(item);
     
@@ -129,12 +127,37 @@ function addItemToStorage(item){
     localStorage.setItem('items', JSON.stringify(itemsFromStorage)); //Here we decide to use the 'items' key
 }
 
+function getItemsFromStorage() {
+    let itemsFromStorage;
 
+    if (localStorage.getItem('items') === null){
+        itemsFromStorage = [];
+    } else {
+        itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+    }
+    return itemsFromStorage;
+}
 
-//Event Listeners
+function displayItemsFromStorage() {
+    const itemsFromStorage = getItemsFromStorage();
+    itemsFromStorage.forEach((item) => {
+        const newItem = createListItem(item);
+        itemList.appendChild(newItem);
+    });
+    checkUI();
+}
+
+// Initialize App
+function init (){
+    //Event Listeners
 enterItemForm.addEventListener('submit', addItemToList);
 itemList.addEventListener('click', removeItemFromList);
 clearButton.addEventListener('click', clearListItems);
 filter.addEventListener('input', filterItems);
+document.addEventListener('DOMContentLoaded', displayItemsFromStorage);
 
 checkUI();
+}
+
+init();
+
