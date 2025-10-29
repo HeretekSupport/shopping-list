@@ -3,10 +3,10 @@
 2) Remove items from list when clicking X button [X]
 3) Clear ALL items with "clear" button [X]
 4) Filter items by typing in the filter field [X]
-5) Add localStorage to persist items [~]
-6) Click on an item to put into "edit mode" and add to form
-7) Update item
-8) Deploy to Netlify
+5) Add localStorage to persist items [X]
+6) Click on an item to put into "edit mode" and add to form []
+7) Update item []
+8) Deploy to Netlify [X?] - used my own Express server on an AWS EC2 instance. Mainly so I could test some other devops tools while at it.
 */
 
 const enterItemForm = document.querySelector('#item-form');
