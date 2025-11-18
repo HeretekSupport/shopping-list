@@ -1,5 +1,6 @@
 import Storage from './Storage.js';
 import UI from './UI.js';
+import '../css/style.css';
 
 class ShoppingListApp {
   constructor() {
